@@ -22,7 +22,7 @@
 
 ```bash
 # 1. Клонируем и устанавливаем PHP‑зависимости
- git clone https://github.com/YOUR_USER/domain-checker.git
+ git clone https://github.com/RikiTwiki/domain-checker.git
  cd domain-checker
  composer install
 
@@ -31,7 +31,7 @@
  php artisan key:generate
 
 # 3. Запускаем миграции + сидер тест‑пользователя
- php artisan migrate --seed   # создаст пользователя test@example.com / secret123
+ php artisan migrate --seed   # создаст пользователя user@example.com / qwerty
 
 # 4. Устанавливаем JS-зависимости и сборку фронта
  npm install
