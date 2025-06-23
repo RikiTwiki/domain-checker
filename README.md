@@ -21,22 +21,23 @@
 ## Быстрый старт (локально)
 
 ```bash
-# 1. Клонируем и устанавливаем PHP‑зависимости
- git clone https://github.com/RikiTwiki/domain-checker.git
- cd domain-checker
- composer install
+# 1. Клонируем и ставим PHP‑зависимости
+git clone https://github.com/RikiTwiki/domain-checker.git
+cd domain-checker
+composer install
 
 # 2. Настраиваем .env и генерируем APP_KEY
- cp .env.example .env
- php artisan key:generate
+cp .env.example .env
+php artisan key:generate
 
-# 3. Запускаем миграции + сидер тест‑пользователя
- php artisan migrate --seed   # создаст пользователя user@example.com / qwerty
+# 3. Создаём базу и сидим тест‑юзера
+php artisan db:create            # создаст БД, если ещё нет
+php artisan migrate --seed       # пользователь user@example.com / qwerty
 
-# 4. Устанавливаем JS-зависимости и сборку фронта
- npm install
- npm run dev       # вкладка 1 – Vite
- php artisan serve # вкладка 2 – Laravel
+# 4. Ставим JS‑зависимости и запускаем фронт
+npm install
+npm run dev       # вкладка 1 – Vite HMR
+php artisan serve # вкладка 2 – Laravel backend
 ```
 
 Откройте [http://127.0.0.1:8000](http://127.0.0.1:8000) — появится форма входа.
@@ -44,7 +45,7 @@
 ### Тестовые учётные данные
 
 | Email              | Пароль   |
-|--------------------|----------|
+| ------------------ | -------- |
 | `user@example.com` | `qwerty` |
 
 ---
@@ -53,10 +54,10 @@
 
 | Метод  | URL                 | Access         | Payload               | Ответ                               |
 | ------ | ------------------- | -------------- | --------------------- | ----------------------------------- |
-| `POST` | `/api/login`        | Публичный      | `{ email, password }` | `{ token }`                         |
+| `POST` | `/api/login`        | публичный      | `{ email, password }` | `{ token }`                         |
 | `POST` | `/api/check-domain` | `auth:sanctum` | `{ domain }`          | `{ domain, available, expires_at }` |
 
-Пример `curl`:
+### Пример `curl`
 
 ```bash
 curl -X POST http://127.0.0.1:8000/api/check-domain \
@@ -70,15 +71,17 @@ curl -X POST http://127.0.0.1:8000/api/check-domain \
 ## Структура проекта
 
 ```
+├─ app/Console/Commands/
+│  └─ DbCreate.php              # artisan db:create
 ├─ app/Http/Controllers/
 │  ├─ AuthController.php        # login/logout
 │  └─ DomainCheckController.php # проверка домена
 ├─ database/seeders/
 │  └─ TestUserSeeder.php        # создаёт тест‑юзера
 ├─ resources/js/components/
-│  ├─ App.vue                   # роутер + переключение
+│  ├─ App.vue                   # переключение авторизация/чекер
 │  ├─ Login.vue                 # форма входа
-│  └─ DomainChecker.vue         # ввод + списки
+│  └─ DomainChecker.vue         # ввод + результаты
 ├─ routes/api.php
 └─ …
 ```
